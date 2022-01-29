@@ -1,0 +1,24 @@
+{
+  "name": "pow-chain",
+  "version": "1.0.0",
+  "description": "pow chain",
+  "main": "index.js",
+  "dependencies": {
+    "crypto-js": "^4.1.1",
+    "jayson": "^3.6.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shanedunne/pow-chain.git"
+  },
+  "author": "shanedunne",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shanedunne/pow-chain/issues"
+  },
+  "homepage": "https://github.com/shanedunne/pow-chain#readme"
+}
