@@ -1,3 +1,6 @@
 module.exports = {
-    PORT: 3032
+    PORT: 3032,
+    // miners keys
+    PUBLIC_KEY: "04e02ed9c67375b623bfce5506aeb3e61f0d47140d3d5ac925ef1fb13e53f792d733a9ddba022b822317db30f03f377127b726c23601cbb86801371d5a2bdd4fa0",
+    PRIVATE_KEY: "7656006e8f82656a2a8c2a8ac4db6e41385082ea69318bfeafc878d6ec30ab7"
 };
