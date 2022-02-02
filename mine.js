@@ -4,7 +4,8 @@ const UTXO = require('./models/UTXO');
 const Block = require('./models/Block');
 const db = require('./db');
 const {PUBLIC_KEY} = require('./config');
-const TARGET_DIFFICULTY = BigInt("0x000" + "F".repeat(63));
+const { BlockList } = require('net');
+const TARGET_DIFFICULTY = BigInt("0x0000" + "F".repeat(60));
 const BLOCK_REWARD = 10;
 
 let mining = false;
@@ -18,8 +19,12 @@ function stopMining() {
     mining = false;
 }
 
+var blockTimeArr = [];
+
 function mine() {
     if(!mining) return;
+
+    const startTime = new Date()
 
     const block = new Block();
 
@@ -31,14 +36,33 @@ function mine() {
         block.nonce++;
     }
 
+    
+    
+
     block.execute();
 
-    db.blockchain.addBlock(block);
+    db.blockchain.addBlock(block); 
+    
 
     console.log(`Block #${db.blockchain.blockHeight()} HASH: 0x${block.hash()} NONCE: ${block.nonce}`)
 
+    let time = new Date()
+    let blockTime = time - startTime
+    blockTimeArr.push(blockTime)
+    console.log(blockTime)
+
+    if(blockTimeArr.length % 5 === 0) {
+        let averageTime = Math.floor((blockTimeArr.reduce((a, b) => a + b, 0)) / 5)
+        console.log(averageTime);
+        blockTimeArr = [];
+    }
+
     setTimeout(mine, 3000);
 
+}
+
+function adjustDifficulty(){
+     
 }
 
 module.exports = {
