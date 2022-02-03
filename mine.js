@@ -5,8 +5,12 @@ const Block = require('./models/Block');
 const db = require('./db');
 const {PUBLIC_KEY} = require('./config');
 const { BlockList } = require('net');
-const TARGET_DIFFICULTY = BigInt("0x0000" + "F".repeat(60));
+
+let leadingZero = 4;
+let fCount = 60;
+const TARGET_DIFFICULTY = BigInt("0x" + "0".repeat(leadingZero) + "F".repeat(fCount));
 const BLOCK_REWARD = 10;
+
 
 let mining = false;
 
@@ -20,11 +24,13 @@ function stopMining() {
 }
 
 var blockTimeArr = [];
+var avTimeArr = [];
+
 
 function mine() {
     if(!mining) return;
 
-    const startTime = new Date()
+    const startTime = Date.now()
 
     const block = new Block();
 
@@ -36,33 +42,46 @@ function mine() {
         block.nonce++;
     }
 
-    
-    
-
     block.execute();
 
     db.blockchain.addBlock(block); 
-    
+
 
     console.log(`Block #${db.blockchain.blockHeight()} HASH: 0x${block.hash()} NONCE: ${block.nonce}`)
 
-    let time = new Date()
+    let time = Date.now()
     let blockTime = time - startTime
     blockTimeArr.push(blockTime)
     console.log(blockTime)
 
     if(blockTimeArr.length % 5 === 0) {
         let averageTime = Math.floor((blockTimeArr.reduce((a, b) => a + b, 0)) / 5)
-        console.log(averageTime);
-        blockTimeArr = [];
+        if (averageTime < 6000) {
+            leadingZero++;
+            fCount--;
+            blockTimeArr = []
+            console.log("Difficulty Increased")
+
+            console.log(leadingZero)
+            console.log(fCount)
+
+        } else if(averageTime > 14000) {
+            leadingZero--;
+            fCount++;
+            blockTimeArr = []
+            console.log("Difficulty Decreased")
+
+            console.log(leadingZero)
+            console.log(fCount)
+        } else {
+            blockTimeArr = []
+            console.log("Difficulty not adjusted")
+        }
+        console.log(averageTime)
     }
 
-    setTimeout(mine, 3000);
+    mine()
 
-}
-
-function adjustDifficulty(){
-     
 }
 
 module.exports = {
